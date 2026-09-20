@@ -1,0 +1,1 @@
+"""TradeDocs AI application package."""

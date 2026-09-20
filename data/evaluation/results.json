@@ -1,0 +1,40 @@
+{
+  "cases": 50,
+  "retrieval": {
+    "dense": {
+      "recall_at_1": 0.756,
+      "recall_at_5": 0.933,
+      "mrr": 0.814,
+      "p50_retrieval_ms": 1.01,
+      "p95_retrieval_ms": 1.3
+    },
+    "bm25": {
+      "recall_at_1": 0.711,
+      "recall_at_5": 0.933,
+      "mrr": 0.808,
+      "p50_retrieval_ms": 1.08,
+      "p95_retrieval_ms": 1.36
+    },
+    "hybrid": {
+      "recall_at_1": 0.778,
+      "recall_at_5": 0.911,
+      "mrr": 0.821,
+      "p50_retrieval_ms": 1.17,
+      "p95_retrieval_ms": 1.51
+    },
+    "hybrid_rerank": {
+      "recall_at_1": 0.778,
+      "recall_at_5": 0.956,
+      "mrr": 0.842,
+      "p50_retrieval_ms": 1.22,
+      "p95_retrieval_ms": 1.69
+    }
+  },
+  "generation": {
+    "citation_precision": 0.978,
+    "groundedness": 0.978,
+    "answer_document_match": 0.867,
+    "insufficient_evidence_recall": 1.0,
+    "unsupported_claim_rate": 0.0
+  }
+}
