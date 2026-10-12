@@ -1,12 +1,13 @@
 """SQLite-backed telemetry and feedback repository; no secrets are persisted."""
 import json
+import os
 import sqlite3
 from pathlib import Path
 from threading import Lock
 
 class TelemetryStore:
     def __init__(self, db_path: str | None = None):
-        self.path = db_path or str(Path(__file__).parents[2] / "data" / "runtime" / "tradedocs.db")
+        self.path = db_path or os.getenv("TRADEDOCS_DB") or str(Path(__file__).parents[2] / "data" / "runtime" / "tradedocs.db")
         Path(self.path).parent.mkdir(parents=True, exist_ok=True)
         self.lock = Lock()
         with self._connect() as db:
@@ -25,6 +26,10 @@ class TelemetryStore:
     def feedback(self, request_id: str, helpful: bool):
         with self.lock, self._connect() as db:
             db.execute("INSERT INTO feedback(request_id,helpful) VALUES(?,?)",(request_id,int(helpful)))
+    def latencies(self) -> list[float]:
+        with self._connect() as db:
+            return sorted(r[0] for r in db.execute("SELECT total_ms FROM query_events WHERE total_ms IS NOT NULL"))
+
     def metrics(self):
         with self._connect() as db:
             total=db.execute("SELECT count(*) FROM query_events").fetchone()[0]
