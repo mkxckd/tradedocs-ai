@@ -1,52 +1,954 @@
 [
- {"question":"Why am I getting HTTP 429?","expected_documents":["api-rate-v32","api-errors"],"facts":["180","Retry-After"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"What is the current Orders API rate limit?","expected_documents":["api-rate-v32"],"facts":["180"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"What was the v2.1 limit?","expected_documents":["api-rate-v21"],"facts":["120"],"category":"api","difficulty":"medium","behavior":"answer"},
- {"question":"Compare current rate limits with previous version.","expected_documents":["api-rate-v32","api-rate-v21"],"facts":["180","120"],"category":"api","difficulty":"hard","behavior":"answer"},
- {"question":"How do I authenticate?","expected_documents":["api-auth"],"facts":["OAuth"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"What does HTTP 401 mean?","expected_documents":["api-errors"],"facts":["expired"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"How should I retry an API error?","expected_documents":["api-errors","api-rate-v32"],"facts":["Retry-After"],"category":"api","difficulty":"medium","behavior":"answer"},
- {"question":"How does cursor pagination work?","expected_documents":["pagination"],"facts":["next_cursor"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"How do I reconnect WebSocket?","expected_documents":["websocket"],"facts":["backoff"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"What heartbeat interval does WebSocket use?","expected_documents":["websocket"],"facts":["30"],"category":"api","difficulty":"medium","behavior":"answer"},
- {"question":"Why was my order rejected?","expected_documents":["orders-rejected"],"facts":["buying power"],"category":"trading","difficulty":"easy","behavior":"answer"},
- {"question":"What should I check first for an order rejection?","expected_documents":["orders-rejected"],"facts":["instrument"],"category":"trading","difficulty":"easy","behavior":"answer"},
- {"question":"What happens to a market order?","expected_documents":["guide-33"],"facts":[],"category":"trading","difficulty":"medium","behavior":"answer"},
- {"question":"When can market availability change?","expected_documents":["market-hours"],"facts":["holiday"],"category":"trading","difficulty":"medium","behavior":"answer"},
- {"question":"Are completed trades immediately settled?","expected_documents":["guide-32"],"facts":[],"category":"trading","difficulty":"medium","behavior":"answer"},
- {"question":"How do I withdraw funds?","expected_documents":["withdrawals"],"facts":["verified"],"category":"payments","difficulty":"easy","behavior":"answer"},
- {"question":"Do withdrawals need two-factor authentication?","expected_documents":["withdrawals"],"facts":["two-factor"],"category":"payments","difficulty":"easy","behavior":"answer"},
- {"question":"Why is my withdrawal on hold after resetting password?","expected_documents":["withdrawals"],"facts":["security hold"],"category":"payments","difficulty":"medium","behavior":"answer"},
- {"question":"What caused the API latency incident?","expected_documents":["latency-incident"],"facts":["connection pool"],"category":"operations","difficulty":"easy","behavior":"answer"},
- {"question":"Were earlier 429 errors caused by an incident?","expected_documents":["throttle-incident"],"facts":["traffic burst"],"category":"operations","difficulty":"hard","behavior":"answer"},
- {"question":"What should support collect before escalation?","expected_documents":["guide-36"],"facts":[],"category":"operations","difficulty":"medium","behavior":"answer"},
- {"question":"How do I respond to suspicious login?","expected_documents":["security-login"],"facts":["revoke"],"category":"security","difficulty":"easy","behavior":"answer"},
- {"question":"How should API keys be protected?","expected_documents":["api-auth"],"facts":["rotate"],"category":"security","difficulty":"medium","behavior":"answer"},
- {"question":"Does TradeFlow support quantum-resistant API keys?","expected_documents":[],"facts":[],"category":"security","difficulty":"unanswerable","behavior":"insufficient_evidence"},
- {"question":"Does TradeFlow provide a cryptocurrency wallet?","expected_documents":[],"facts":[],"category":"account","difficulty":"unanswerable","behavior":"insufficient_evidence"},
- {"question":"What is the rate limit?","expected_documents":["api-rate-v32"],"facts":["180"],"category":"api","difficulty":"ambiguous","behavior":"answer"},
- {"question":"429","expected_documents":["api-rate-v32"],"facts":["180"],"category":"api","difficulty":"ambiguous","behavior":"answer"},
- {"question":"latency","expected_documents":["latency-incident"],"facts":["pool"],"category":"operations","difficulty":"ambiguous","behavior":"answer"},
- {"question":"API key rotation","expected_documents":["guide-37"],"facts":[],"category":"security","difficulty":"easy","behavior":"answer"},
- {"question":"Why is API rate limit different in old docs?","expected_documents":["api-rate-v32","api-rate-v21"],"facts":["superseded"],"category":"api","difficulty":"hard","behavior":"answer"},
- {"question":"Can I retry 429 immediately?","expected_documents":["api-rate-v32"],"facts":["backoff"],"category":"api","difficulty":"medium","behavior":"answer"},
- {"question":"Do I need to resubscribe after WebSocket reconnect?","expected_documents":["websocket"],"facts":["resubscribe"],"category":"api","difficulty":"medium","behavior":"answer"},
- {"question":"What information identifies a validation failure?","expected_documents":["orders-rejected"],"facts":["rejection code"],"category":"trading","difficulty":"medium","behavior":"answer"},
- {"question":"How does a password reset affect withdrawals?","expected_documents":["withdrawals"],"facts":["hold"],"category":"payments","difficulty":"medium","behavior":"answer"},
- {"question":"What mitigation resolved elevated latency?","expected_documents":["latency-incident"],"facts":["capacity"],"category":"operations","difficulty":"medium","behavior":"answer"},
- {"question":"What was the 429 incident duration?","expected_documents":["throttle-incident"],"facts":["18"],"category":"operations","difficulty":"medium","behavior":"answer"},
- {"question":"What authentication scheme is used for server integrations?","expected_documents":["api-auth"],"facts":["OAuth"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"What is never safe to share during a suspicious login?","expected_documents":["security-login"],"facts":["one-time"],"category":"security","difficulty":"medium","behavior":"answer"},
- {"question":"Does TradeFlow offer tax advice?","expected_documents":[],"facts":[],"category":"general","difficulty":"unanswerable","behavior":"insufficient_evidence"},
- {"question":"Does TradeFlow guarantee order fill price?","expected_documents":[],"facts":[],"category":"trading","difficulty":"unanswerable","behavior":"insufficient_evidence"},
- {"question":"Rate limit current version","expected_documents":["api-rate-v32"],"facts":["180"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"Legacy API rate limit","expected_documents":["api-rate-v21"],"facts":["120"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"Order rejection price band","expected_documents":["orders-rejected"],"facts":["price bands"],"category":"trading","difficulty":"medium","behavior":"answer"},
- {"question":"Withdrawal linked payment method","expected_documents":["withdrawals"],"facts":["linked"],"category":"payments","difficulty":"easy","behavior":"answer"},
- {"question":"API throttling historical incident","expected_documents":["throttle-incident"],"facts":["traffic"],"category":"operations","difficulty":"medium","behavior":"answer"},
- {"question":"Order API p95 latency incident","expected_documents":["latency-incident"],"facts":["p95"],"category":"operations","difficulty":"medium","behavior":"answer"},
- {"question":"Cursor list endpoint","expected_documents":["pagination"],"facts":["cursor"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"Unexpected websocket close","expected_documents":["websocket"],"facts":["reconnect"],"category":"api","difficulty":"easy","behavior":"answer"},
- {"question":"Unknown feature: quantum API","expected_documents":[],"facts":[],"category":"general","difficulty":"unanswerable","behavior":"insufficient_evidence"},
- {"question":"API order rate current vs old","expected_documents":["api-rate-v32","api-rate-v21"],"facts":["180","120"],"category":"api","difficulty":"hard","behavior":"answer"}
+ {
+  "id": "c001",
+  "split": "dev",
+  "question": "Why am I getting HTTP 429 errors?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v32",
+   "api-errors"
+  ],
+  "expected_facts": [
+   "Retry-After"
+  ]
+ },
+ {
+  "id": "c002",
+  "split": "test",
+  "question": "What is the current request limit for the Orders endpoint?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v32"
+  ],
+  "expected_facts": [
+   "180"
+  ]
+ },
+ {
+  "id": "c003",
+  "split": "dev",
+  "question": "How many order requests per minute did version 2.1 allow?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v21"
+  ],
+  "expected_facts": [
+   "120"
+  ]
+ },
+ {
+  "id": "c004",
+  "split": "test",
+  "question": "Compare the current Orders rate limit with the previous version.",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v32",
+   "api-rate-v21"
+  ],
+  "expected_facts": [
+   "180",
+   "120"
+  ]
+ },
+ {
+  "id": "c005",
+  "split": "dev",
+  "question": "What is the market data rate limit?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v32"
+  ],
+  "expected_facts": [
+   "600"
+  ]
+ },
+ {
+  "id": "c006",
+  "split": "test",
+  "question": "Is the rate limit window fixed or rolling?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-rate-v32"
+  ],
+  "expected_facts": [
+   "rolling"
+  ]
+ },
+ {
+  "id": "c007",
+  "split": "dev",
+  "question": "How do server integrations authenticate?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-auth-v32"
+  ],
+  "expected_facts": [
+   "client credentials"
+  ]
+ },
+ {
+  "id": "c008",
+  "split": "test",
+  "question": "How long do access tokens last?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-auth-v32"
+  ],
+  "expected_facts": [
+   "60 minutes"
+  ]
+ },
+ {
+  "id": "c009",
+  "split": "dev",
+  "question": "Can I still use static API keys in the X-API-Key header?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-auth-v21",
+   "api-auth-v32"
+  ],
+  "expected_facts": [
+   "31 December 2025"
+  ]
+ },
+ {
+  "id": "c010",
+  "split": "test",
+  "question": "What does a 403 response mean?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-errors"
+  ],
+  "expected_facts": [
+   "scope"
+  ]
+ },
+ {
+  "id": "c011",
+  "split": "dev",
+  "question": "Should I retry a 401 error?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-errors"
+  ],
+  "expected_facts": [
+   "401"
+  ]
+ },
+ {
+  "id": "c012",
+  "split": "test",
+  "question": "How often should client secrets be rotated?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-key-management"
+  ],
+  "expected_facts": [
+   "90 days"
+  ]
+ },
+ {
+  "id": "c013",
+  "split": "dev",
+  "question": "What should I do if my client secret leaks?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-key-management",
+   "suspicious-login"
+  ],
+  "expected_facts": [
+   "revoke"
+  ]
+ },
+ {
+  "id": "c014",
+  "split": "test",
+  "question": "What is the maximum page size for list endpoints?",
+  "behavior": "answer",
+  "expected_documents": [
+   "pagination"
+  ],
+  "expected_facts": [
+   "200"
+  ]
+ },
+ {
+  "id": "c015",
+  "split": "dev",
+  "question": "How do I get the next page of orders?",
+  "behavior": "answer",
+  "expected_documents": [
+   "pagination"
+  ],
+  "expected_facts": [
+   "next_cursor"
+  ]
+ },
+ {
+  "id": "c016",
+  "split": "test",
+  "question": "How often does the WebSocket send heartbeats?",
+  "behavior": "answer",
+  "expected_documents": [
+   "websocket"
+  ],
+  "expected_facts": [
+   "30 seconds"
+  ]
+ },
+ {
+  "id": "c017",
+  "split": "dev",
+  "question": "Do I need to resubscribe after a WebSocket reconnect?",
+  "behavior": "answer",
+  "expected_documents": [
+   "websocket"
+  ],
+  "expected_facts": [
+   "resubscribe"
+  ]
+ },
+ {
+  "id": "c018",
+  "split": "test",
+  "question": "How many channels can one WebSocket connection subscribe to?",
+  "behavior": "answer",
+  "expected_documents": [
+   "websocket"
+  ],
+  "expected_facts": [
+   "50"
+  ]
+ },
+ {
+  "id": "c019",
+  "split": "dev",
+  "question": "How do I avoid creating duplicate orders when retrying?",
+  "behavior": "answer",
+  "expected_documents": [
+   "idempotency"
+  ],
+  "expected_facts": [
+   "Idempotency-Key"
+  ]
+ },
+ {
+  "id": "c020",
+  "split": "test",
+  "question": "How long are idempotency keys kept?",
+  "behavior": "answer",
+  "expected_documents": [
+   "idempotency"
+  ],
+  "expected_facts": [
+   "24 hours"
+  ]
+ },
+ {
+  "id": "c021",
+  "split": "dev",
+  "question": "What timeouts should my REST client use?",
+  "behavior": "answer",
+  "expected_documents": [
+   "client-timeouts"
+  ],
+  "expected_facts": [
+   "10 seconds"
+  ]
+ },
+ {
+  "id": "c022",
+  "split": "test",
+  "question": "How do I verify a webhook came from TradeFlow?",
+  "behavior": "answer",
+  "expected_documents": [
+   "webhooks"
+  ],
+  "expected_facts": [
+   "HMAC-SHA256"
+  ]
+ },
+ {
+  "id": "c023",
+  "split": "dev",
+  "question": "How many times are failed webhooks retried?",
+  "behavior": "answer",
+  "expected_documents": [
+   "webhooks"
+  ],
+  "expected_facts": [
+   "5 times"
+  ]
+ },
+ {
+  "id": "c024",
+  "split": "test",
+  "question": "When is sandbox data reset?",
+  "behavior": "answer",
+  "expected_documents": [
+   "sandbox"
+  ],
+  "expected_facts": [
+   "Sunday"
+  ]
+ },
+ {
+  "id": "c025",
+  "split": "dev",
+  "question": "What should I include in a support ticket for an API error?",
+  "behavior": "answer",
+  "expected_documents": [
+   "request-ids",
+   "support-escalation"
+  ],
+  "expected_facts": [
+   "X-Request-ID"
+  ]
+ },
+ {
+  "id": "c026",
+  "split": "test",
+  "question": "How much notice is given before an API version is removed?",
+  "behavior": "answer",
+  "expected_documents": [
+   "api-versioning"
+  ],
+  "expected_facts": [
+   "six months"
+  ]
+ },
+ {
+  "id": "c027",
+  "split": "dev",
+  "question": "Why are my quotes delayed?",
+  "behavior": "answer",
+  "expected_documents": [
+   "market-data-api"
+  ],
+  "expected_facts": [
+   "15 minutes"
+  ]
+ },
+ {
+  "id": "c028",
+  "split": "test",
+  "question": "What changed in release 3.2?",
+  "behavior": "answer",
+  "expected_documents": [
+   "release-notes-v32"
+  ],
+  "expected_facts": [
+   "180"
+  ]
+ },
+ {
+  "id": "c029",
+  "split": "dev",
+  "question": "Does a market order guarantee my fill price?",
+  "behavior": "answer",
+  "expected_documents": [
+   "order-types"
+  ],
+  "expected_facts": [
+   "slippage"
+  ]
+ },
+ {
+  "id": "c030",
+  "split": "test",
+  "question": "What order types are supported?",
+  "behavior": "answer",
+  "expected_documents": [
+   "order-types"
+  ],
+  "expected_facts": [
+   "stop-limit"
+  ]
+ },
+ {
+  "id": "c031",
+  "split": "dev",
+  "question": "Why was my order rejected?",
+  "behavior": "answer",
+  "expected_documents": [
+   "orders-rejected"
+  ],
+  "expected_facts": [
+   "rejection code"
+  ]
+ },
+ {
+  "id": "c032",
+  "split": "test",
+  "question": "What does the PRICE_BAND rejection mean?",
+  "behavior": "answer",
+  "expected_documents": [
+   "price-bands",
+   "orders-rejected"
+  ],
+  "expected_facts": [
+   "10 percent"
+  ]
+ },
+ {
+  "id": "c033",
+  "split": "dev",
+  "question": "Can I cancel a partially filled order?",
+  "behavior": "answer",
+  "expected_documents": [
+   "order-cancellation"
+  ],
+  "expected_facts": [
+   "remaining"
+  ]
+ },
+ {
+  "id": "c034",
+  "split": "test",
+  "question": "What happens to orders sent while the market is closed?",
+  "behavior": "answer",
+  "expected_documents": [
+   "market-hours"
+  ],
+  "expected_facts": [
+   "MARKET_CLOSED"
+  ]
+ },
+ {
+  "id": "c035",
+  "split": "dev",
+  "question": "How do I get approval to trade options?",
+  "behavior": "answer",
+  "expected_documents": [
+   "trading-permissions"
+  ],
+  "expected_facts": [
+   "approval"
+  ]
+ },
+ {
+  "id": "c036",
+  "split": "test",
+  "question": "When do equity trades settle?",
+  "behavior": "answer",
+  "expected_documents": [
+   "settlement"
+  ],
+  "expected_facts": [
+   "T+1"
+  ]
+ },
+ {
+  "id": "c037",
+  "split": "dev",
+  "question": "Can I withdraw money from a sale straight away?",
+  "behavior": "answer",
+  "expected_documents": [
+   "settlement"
+  ],
+  "expected_facts": [
+   "unsettled"
+  ]
+ },
+ {
+  "id": "c038",
+  "split": "test",
+  "question": "What is the margin maintenance requirement?",
+  "behavior": "answer",
+  "expected_documents": [
+   "margin"
+  ],
+  "expected_facts": [
+   "25 percent"
+  ]
+ },
+ {
+  "id": "c039",
+  "split": "dev",
+  "question": "How long do I have to meet a margin call?",
+  "behavior": "answer",
+  "expected_documents": [
+   "margin"
+  ],
+  "expected_facts": [
+   "3 business days"
+  ]
+ },
+ {
+  "id": "c040",
+  "split": "test",
+  "question": "How much does an equity order cost?",
+  "behavior": "answer",
+  "expected_documents": [
+   "fees"
+  ],
+  "expected_facts": [
+   "0.005"
+  ]
+ },
+ {
+  "id": "c041",
+  "split": "dev",
+  "question": "Is there a fee for wire withdrawals?",
+  "behavior": "answer",
+  "expected_documents": [
+   "fees"
+  ],
+  "expected_facts": [
+   "15.00"
+  ]
+ },
+ {
+  "id": "c042",
+  "split": "test",
+  "question": "What happens to my position after a stock split?",
+  "behavior": "answer",
+  "expected_documents": [
+   "corporate-actions"
+  ],
+  "expected_facts": [
+   "cost basis"
+  ]
+ },
+ {
+  "id": "c043",
+  "split": "dev",
+  "question": "What is the maximum order size?",
+  "behavior": "answer",
+  "expected_documents": [
+   "pre-trade-risk"
+  ],
+  "expected_facts": [
+   "1,000,000"
+  ]
+ },
+ {
+  "id": "c044",
+  "split": "test",
+  "question": "What do I need before I can withdraw funds?",
+  "behavior": "answer",
+  "expected_documents": [
+   "withdrawals-v20"
+  ],
+  "expected_facts": [
+   "two-factor"
+  ]
+ },
+ {
+  "id": "c045",
+  "split": "dev",
+  "question": "Why is my withdrawal on hold after I reset my password?",
+  "behavior": "answer",
+  "expected_documents": [
+   "withdrawals-v20"
+  ],
+  "expected_facts": [
+   "48-hour"
+  ]
+ },
+ {
+  "id": "c046",
+  "split": "test",
+  "question": "How did the withdrawal hold change from the previous policy?",
+  "behavior": "answer",
+  "expected_documents": [
+   "withdrawals-v20",
+   "withdrawals-v13"
+  ],
+  "expected_facts": [
+   "48-hour",
+   "24-hour"
+  ]
+ },
+ {
+  "id": "c047",
+  "split": "dev",
+  "question": "Can I fund my account with a credit card?",
+  "behavior": "answer",
+  "expected_documents": [
+   "deposits"
+  ],
+  "expected_facts": [
+   "not accepted"
+  ]
+ },
+ {
+  "id": "c048",
+  "split": "test",
+  "question": "What documents do I need to verify my identity?",
+  "behavior": "answer",
+  "expected_documents": [
+   "identity-verification"
+  ],
+  "expected_facts": [
+   "proof of address"
+  ]
+ },
+ {
+  "id": "c049",
+  "split": "dev",
+  "question": "What can a restricted account still do?",
+  "behavior": "answer",
+  "expected_documents": [
+   "account-restrictions"
+  ],
+  "expected_facts": [
+   "close existing positions"
+  ]
+ },
+ {
+  "id": "c050",
+  "split": "test",
+  "question": "How long does it take to close an account?",
+  "behavior": "answer",
+  "expected_documents": [
+   "account-closure"
+  ],
+  "expected_facts": [
+   "30 days"
+  ]
+ },
+ {
+  "id": "c051",
+  "split": "dev",
+  "question": "I lost my phone with my authenticator app. How do I get back in?",
+  "behavior": "answer",
+  "expected_documents": [
+   "account-recovery",
+   "two-factor"
+  ],
+  "expected_facts": [
+   "backup codes"
+  ]
+ },
+ {
+  "id": "c052",
+  "split": "test",
+  "question": "When are annual tax forms available?",
+  "behavior": "answer",
+  "expected_documents": [
+   "statements-tax"
+  ],
+  "expected_facts": [
+   "15 February"
+  ]
+ },
+ {
+  "id": "c053",
+  "split": "dev",
+  "question": "Does TradeFlow give tax advice?",
+  "behavior": "answer",
+  "expected_documents": [
+   "statements-tax"
+  ],
+  "expected_facts": [
+   "does not provide tax advice"
+  ]
+ },
+ {
+  "id": "c054",
+  "split": "test",
+  "question": "How long are trade records kept?",
+  "behavior": "answer",
+  "expected_documents": [
+   "data-retention"
+  ],
+  "expected_facts": [
+   "seven years"
+  ]
+ },
+ {
+  "id": "c055",
+  "split": "dev",
+  "question": "Someone logged into my account from an unknown device. What should I do?",
+  "behavior": "answer",
+  "expected_documents": [
+   "suspicious-login",
+   "sessions"
+  ],
+  "expected_facts": [
+   "revoke"
+  ]
+ },
+ {
+  "id": "c056",
+  "split": "test",
+  "question": "Will TradeFlow ever ask for my one-time code?",
+  "behavior": "answer",
+  "expected_documents": [
+   "phishing",
+   "suspicious-login"
+  ],
+  "expected_facts": [
+   "never"
+  ]
+ },
+ {
+  "id": "c057",
+  "split": "dev",
+  "question": "How many IP ranges can I allowlist for an API credential?",
+  "behavior": "answer",
+  "expected_documents": [
+   "ip-allowlist"
+  ],
+  "expected_facts": [
+   "10"
+  ]
+ },
+ {
+  "id": "c058",
+  "split": "test",
+  "question": "What caused the April 2025 latency incident?",
+  "behavior": "answer",
+  "expected_documents": [
+   "latency-incident"
+  ],
+  "expected_facts": [
+   "connection pool"
+  ]
+ },
+ {
+  "id": "c059",
+  "split": "dev",
+  "question": "How long did the September 2025 throttling incident last?",
+  "behavior": "answer",
+  "expected_documents": [
+   "throttle-incident"
+  ],
+  "expected_facts": [
+   "18 minutes"
+  ]
+ },
+ {
+  "id": "c060",
+  "split": "test",
+  "question": "Why were WebSocket clients disconnected in June 2025?",
+  "behavior": "answer",
+  "expected_documents": [
+   "websocket-incident"
+  ],
+  "expected_facts": [
+   "idle timeout"
+  ]
+ },
+ {
+  "id": "c061",
+  "split": "dev",
+  "question": "When is scheduled maintenance?",
+  "behavior": "answer",
+  "expected_documents": [
+   "maintenance"
+  ],
+  "expected_facts": [
+   "Sundays"
+  ]
+ },
+ {
+  "id": "c062",
+  "split": "test",
+  "question": "What availability does TradeFlow target for the API?",
+  "behavior": "answer",
+  "expected_documents": [
+   "service-levels"
+  ],
+  "expected_facts": [
+   "99.9"
+  ]
+ },
+ {
+  "id": "c063",
+  "split": "dev",
+  "question": "What should my integration monitor?",
+  "behavior": "answer",
+  "expected_documents": [
+   "client-monitoring"
+  ],
+  "expected_facts": [
+   "429"
+  ]
+ },
+ {
+  "id": "c064",
+  "split": "test",
+  "question": "How long are audit events kept?",
+  "behavior": "answer",
+  "expected_documents": [
+   "audit-log"
+  ],
+  "expected_facts": [
+   "one year"
+  ]
+ },
+ {
+  "id": "c065",
+  "split": "dev",
+  "question": "Do the official SDKs handle retries?",
+  "behavior": "answer",
+  "expected_documents": [
+   "official-sdks"
+  ],
+  "expected_facts": [
+   "exponential backoff"
+  ]
+ },
+ {
+  "id": "c066",
+  "split": "test",
+  "question": "Does TradeFlow support quantum-resistant API keys?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c067",
+  "split": "dev",
+  "question": "Does TradeFlow provide a cryptocurrency wallet?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c068",
+  "split": "test",
+  "question": "Can I stake crypto on TradeFlow?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c069",
+  "split": "dev",
+  "question": "Is there a GraphQL API?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c070",
+  "split": "test",
+  "question": "Does TradeFlow support the FIX protocol?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c071",
+  "split": "dev",
+  "question": "Can I open a joint account with my spouse?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c072",
+  "split": "test",
+  "question": "Is there a referral bonus for inviting friends?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c073",
+  "split": "dev",
+  "question": "Does TradeFlow pay interest on uninvested cash?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c074",
+  "split": "test",
+  "question": "Can I trade government bonds?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c075",
+  "split": "dev",
+  "question": "Does TradeFlow offer a debit card?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c076",
+  "split": "test",
+  "question": "Where are TradeFlow's physical branches?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c077",
+  "split": "dev",
+  "question": "Can I buy mutual funds?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c078",
+  "split": "test",
+  "question": "Does the mobile app have a dark mode?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c079",
+  "split": "dev",
+  "question": "Is there a securities lending programme?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c080",
+  "split": "test",
+  "question": "Can I gift shares to a family member?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c081",
+  "split": "dev",
+  "question": "Does TradeFlow offer Islamic swap-free accounts?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c082",
+  "split": "test",
+  "question": "What are the trading desk phone hours?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c083",
+  "split": "dev",
+  "question": "Can I hold balances in multiple currencies?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c084",
+  "split": "test",
+  "question": "Does TradeFlow have an AI trading bot?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ },
+ {
+  "id": "c085",
+  "split": "dev",
+  "question": "Can I trade futures on Brazilian exchanges?",
+  "behavior": "insufficient_evidence",
+  "expected_documents": [],
+  "expected_facts": []
+ }
 ]

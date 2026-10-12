@@ -1,40 +1,187 @@
 {
-  "cases": 50,
-  "retrieval": {
-    "dense": {
-      "recall_at_1": 0.756,
-      "recall_at_5": 0.933,
-      "mrr": 0.814,
-      "p50_retrieval_ms": 1.01,
-      "p95_retrieval_ms": 1.3
+  "generated": "2026-10-13",
+  "generator": "extractive (no LLM)",
+  "coverage_threshold": 0.55,
+  "splits": {
+    "dev": {
+      "retrieval": {
+        "dense": {
+          "recall_at_1": 0.879,
+          "recall_at_5": 1.0,
+          "mrr": 0.932,
+          "cases": 33
+        },
+        "bm25": {
+          "recall_at_1": 0.909,
+          "recall_at_5": 1.0,
+          "mrr": 0.947,
+          "cases": 33
+        },
+        "hybrid": {
+          "recall_at_1": 0.909,
+          "recall_at_5": 1.0,
+          "mrr": 0.947,
+          "cases": 33
+        },
+        "hybrid_rerank": {
+          "recall_at_1": 0.909,
+          "recall_at_5": 1.0,
+          "mrr": 0.949,
+          "cases": 33
+        }
+      },
+      "answers": {
+        "answerable_cases": 33,
+        "unanswerable_cases": 10,
+        "answer_rate_on_answerable": 0.818,
+        "refusal_recall_on_unanswerable": 1.0,
+        "citation_precision": 0.84,
+        "answers_citing_an_expected_document": 1.0,
+        "expected_fact_recall": 0.788,
+        "failures": [
+          {
+            "id": "c009",
+            "question": "Can I still use static API keys in the X-API-Key header?",
+            "problem": "missing expected fact",
+            "answer": "Send the access token in the Authorization header as a Bearer token. [1] Version 2.1 authenticated requests with a static API key sent in the X-API-Key header. [2]"
+          },
+          {
+            "id": "c013",
+            "question": "What should I do if my client secret leaks?",
+            "problem": "refused an answerable question",
+            "coverage": 0.472
+          },
+          {
+            "id": "c025",
+            "question": "What should I include in a support ticket for an API error?",
+            "problem": "refused an answerable question",
+            "coverage": 0.362
+          },
+          {
+            "id": "c037",
+            "question": "Can I withdraw money from a sale straight away?",
+            "problem": "refused an answerable question",
+            "coverage": 0.308
+          },
+          {
+            "id": "c043",
+            "question": "What is the maximum order size?",
+            "problem": "refused an answerable question",
+            "coverage": 0.523
+          },
+          {
+            "id": "c051",
+            "question": "I lost my phone with my authenticator app. How do I get back in?",
+            "problem": "refused an answerable question",
+            "coverage": 0.458
+          },
+          {
+            "id": "c055",
+            "question": "Someone logged into my account from an unknown device. What should I do?",
+            "problem": "refused an answerable question",
+            "coverage": 0.339
+          }
+        ]
+      }
     },
-    "bm25": {
-      "recall_at_1": 0.711,
-      "recall_at_5": 0.933,
-      "mrr": 0.808,
-      "p50_retrieval_ms": 1.08,
-      "p95_retrieval_ms": 1.36
-    },
-    "hybrid": {
-      "recall_at_1": 0.778,
-      "recall_at_5": 0.911,
-      "mrr": 0.821,
-      "p50_retrieval_ms": 1.17,
-      "p95_retrieval_ms": 1.51
-    },
-    "hybrid_rerank": {
-      "recall_at_1": 0.778,
-      "recall_at_5": 0.956,
-      "mrr": 0.842,
-      "p50_retrieval_ms": 1.22,
-      "p95_retrieval_ms": 1.69
+    "test": {
+      "retrieval": {
+        "dense": {
+          "recall_at_1": 0.938,
+          "recall_at_5": 0.969,
+          "mrr": 0.945,
+          "cases": 32
+        },
+        "bm25": {
+          "recall_at_1": 0.875,
+          "recall_at_5": 0.969,
+          "mrr": 0.917,
+          "cases": 32
+        },
+        "hybrid": {
+          "recall_at_1": 0.875,
+          "recall_at_5": 0.969,
+          "mrr": 0.917,
+          "cases": 32
+        },
+        "hybrid_rerank": {
+          "recall_at_1": 0.844,
+          "recall_at_5": 0.969,
+          "mrr": 0.901,
+          "cases": 32
+        }
+      },
+      "answers": {
+        "answerable_cases": 32,
+        "unanswerable_cases": 10,
+        "answer_rate_on_answerable": 0.875,
+        "refusal_recall_on_unanswerable": 1.0,
+        "citation_precision": 0.839,
+        "answers_citing_an_expected_document": 0.964,
+        "expected_fact_recall": 0.688,
+        "failures": [
+          {
+            "id": "c004",
+            "question": "Compare the current Orders rate limit with the previous version.",
+            "problem": "missing expected fact",
+            "answer": "Limits are enforced on a rolling 60-second window. [1] When a limit is exceeded the API returns HTTP 429 with the headers X-RateLimit-Remaining and Retry-After. [1] Limits were enforced on a fixed one-minute window that reset at the start of each minute. [2]"
+          },
+          {
+            "id": "c020",
+            "question": "How long are idempotency keys kept?",
+            "problem": "refused an answerable question",
+            "coverage": 0.492
+          },
+          {
+            "id": "c022",
+            "question": "How do I verify a webhook came from TradeFlow?",
+            "problem": "refused an answerable question",
+            "coverage": 0.526
+          },
+          {
+            "id": "c038",
+            "question": "What is the margin maintenance requirement?",
+            "problem": "missing expected fact",
+            "answer": "If equity falls below this maintenance requirement, TradeFlow issues a margin call that must be met within 3 business days. [1] Margin trading and options trading each require a separate application and approval. [2]"
+          },
+          {
+            "id": "c040",
+            "question": "How much does an equity order cost?",
+            "problem": "missing expected fact",
+            "answer": "TradeFlow supports market, limit, stop, and stop-limit orders. [1] A market order executes at the best available price and does not guarantee the fill price; fast markets can cause slippage. [1] Stock splits adjust position quantity and cost basis automatically on the effective date. [2]"
+          },
+          {
+            "id": "c044",
+            "question": "What do I need before I can withdraw funds?",
+            "problem": "refused an answerable question",
+            "coverage": 0.447
+          },
+          {
+            "id": "c050",
+            "question": "How long does it take to close an account?",
+            "problem": "missing expected fact",
+            "answer": "To close an account, close or transfer all open positions and withdraw the remaining balance, then submit a closure request. [1] A restricted account can close existing positions but cannot open new ones. [2]"
+          },
+          {
+            "id": "c054",
+            "question": "How long are trade records kept?",
+            "problem": "refused an answerable question",
+            "coverage": 0.496
+          },
+          {
+            "id": "c058",
+            "question": "What caused the April 2025 latency incident?",
+            "problem": "missing expected fact",
+            "answer": "On 22 April 2025, p95 latency on the Orders API rose above 4 seconds for 47 minutes and some requests timed out. [1]"
+          },
+          {
+            "id": "c060",
+            "question": "Why were WebSocket clients disconnected in June 2025?",
+            "problem": "missing expected fact",
+            "answer": "On 11 June 2025, WebSocket clients were disconnected every 60 seconds for about two hours. [1]"
+          }
+        ]
+      }
     }
-  },
-  "generation": {
-    "citation_precision": 0.978,
-    "groundedness": 0.978,
-    "answer_document_match": 0.867,
-    "insufficient_evidence_recall": 1.0,
-    "unsupported_claim_rate": 0.0
   }
 }
