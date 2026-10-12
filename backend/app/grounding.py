@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from .corpus import versions_of
 from .retrieval import Hit, Retriever, wants_history
-from .text import content_terms, sentences, stem, tokens
+from .text import STOPWORDS, TOKEN, content_terms, sentences, stem, tokens
 
 # Selected on the *dev* split only (scripts/evaluate.py --tune); the test split is never used for tuning.
 COVERAGE_THRESHOLD = 0.55
@@ -92,6 +92,40 @@ def extractive_answer(retriever: Retriever, query: str, evidence: list[Hit], max
         for score, idx, sentence in sorted(best, key=lambda x: x[1]):
             picked.append(f"{sentence} [{n}]")
     return " ".join(picked[:max_sentences]) if picked else REFUSAL
+
+
+CITED_SEGMENT = re.compile(r"(.+?)\s*((?:\[\d+\]\s*)+)(?=\s|$)", re.S)
+
+
+def highlight_sentences(answer: str, evidence: list[Hit]) -> list[list[int]]:
+    """For each evidence document, the indices of its sentences that support the answer text cited to it.
+
+    Extractive answers quote sentences verbatim, so they match exactly; LLM answers paraphrase, so each cited
+    segment is matched to the document sentence with the highest token overlap (Jaccard >= 0.25).
+    """
+    doc_sentences = [sentences(h.document.content) for h in evidence]
+    doc_tokens = [[set(tokens(s)) for s in sents] for sents in doc_sentences]
+    marks: list[set[int]] = [set() for _ in evidence]
+    for segment, cites in CITED_SEGMENT.findall(answer):
+        seg_tokens = set(tokens(segment))
+        for n in (int(c) for c in re.findall(r"\d+", cites)):
+            if not 1 <= n <= len(evidence) or not seg_tokens:
+                continue
+            for part in sentences(segment.strip()):
+                part_tokens = set(tokens(part))
+                scores = [len(part_tokens & t) / len(part_tokens | t) if t else 0 for t in doc_tokens[n - 1]]
+                if scores and max(scores) >= 0.25:
+                    marks[n - 1].add(scores.index(max(scores)))
+    return [sorted(m) for m in marks]
+
+
+def readable_terms(query: str, stems: list[str]) -> list[str]:
+    """Maps stemmed missing terms back to the words the user actually typed."""
+    wanted, out = set(stems), []
+    for raw in TOKEN.findall(query.lower()):
+        if stem(raw) in wanted and raw not in out and raw not in STOPWORDS:
+            out.append(raw)
+    return out
 
 
 def _sentence_score(retriever: Retriever, terms: set[str], sentence: str, wants_quantity: bool) -> float:

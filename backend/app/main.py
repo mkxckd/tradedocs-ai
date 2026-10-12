@@ -1,4 +1,5 @@
 """TradeDocs AI REST API: evidence-grounded answers over versioned TradeFlow documentation."""
+import difflib
 import json
 import math
 import uuid
@@ -8,11 +9,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from . import grounding
 from .corpus import ROOT, load_corpus, versions_of
+from .env import load_dotenv
 from .llm import CITATION
 from .pipeline import answer_question
 from .retrieval import MODES, default_retriever
 from .storage import TelemetryStore
+from .text import sentences
+
+load_dotenv()
 
 app = FastAPI(title="TradeDocs AI", version="0.3.0")
 STORE = TelemetryStore()
@@ -53,10 +59,14 @@ def chat(req: ChatRequest):
         "citations": [h.document.document_id for h in result.evidence], "insufficient_evidence": result.insufficient,
     }
     STORE.record(event)
+    highlights = grounding.highlight_sentences(result.answer, result.evidence)
+    evidence = [h.to_dict() | {"sentences": sentences(h.document.content), "highlight": marks}
+                for h, marks in zip(result.evidence, highlights)]
     return {
         "request_id": request_id, "answer": result.answer, "intent": result.intent, "rewritten_query": result.rewritten_query,
-        "evidence": [h.to_dict() for h in result.evidence], "retrieved": [h.to_dict() for h in result.retrieved],
+        "evidence": evidence, "retrieved": [h.to_dict() for h in result.retrieved],
         "insufficient_evidence": result.insufficient, "evidence_coverage": round(result.coverage, 3),
+        "coverage_threshold": grounding.COVERAGE_THRESHOLD, "missing_terms": result.missing_terms,
         "generator": result.generator, "metrics": event,
     }
 
@@ -80,6 +90,26 @@ def document(document_id: str):
     if not doc:
         raise HTTPException(404, "Document not found")
     return doc.to_dict() | {"versions": [v.document_id for v in versions_of(doc.family)]}
+
+
+@app.get("/documents/{document_id}/compare/{other_id}")
+def compare(document_id: str, other_id: str):
+    """Sentence-level diff between two versions of the same policy: what was removed, added or kept."""
+    docs = {d.document_id: d for d in load_corpus()}
+    if document_id not in docs or other_id not in docs:
+        raise HTTPException(404, "Document not found")
+    old, new = sorted((docs[document_id], docs[other_id]), key=lambda d: d.date)
+    if old.family != new.family:
+        raise HTTPException(422, "Only versions of the same policy can be compared")
+    a, b = sentences(old.content), sentences(new.content)
+    changes = []
+    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(a=a, b=b, autojunk=False).get_opcodes():
+        if op == "equal":
+            changes += [{"op": "same", "text": t} for t in a[i1:i2]]
+        else:
+            changes += [{"op": "removed", "text": t} for t in a[i1:i2]]
+            changes += [{"op": "added", "text": t} for t in b[j1:j2]]
+    return {"older": old.to_dict(), "newer": new.to_dict(), "changes": changes}
 
 
 @app.post("/feedback")

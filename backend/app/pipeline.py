@@ -2,7 +2,7 @@
 import time
 from dataclasses import dataclass, field
 
-from .grounding import REFUSAL, extractive_answer, ground
+from .grounding import REFUSAL, extractive_answer, ground, readable_terms
 from .llm import LLMError, provider_from_env
 from .retrieval import Hit, Retriever, default_retriever
 
@@ -38,6 +38,7 @@ class Answer:
     coverage: float
     generator: str
     timings: dict = field(default_factory=dict)
+    missing_terms: list[str] = field(default_factory=list)
 
 
 def answer_question(query: str, filters: dict | None = None, retriever: Retriever | None = None, use_llm: bool = True) -> Answer:
@@ -47,8 +48,10 @@ def answer_question(query: str, filters: dict | None = None, retriever: Retrieve
     hits, retrieval_ms = retriever.search(rewritten, filters=filters)
     grounding = ground(retriever, query, hits)
     timings = {"retrieval_ms": retrieval_ms, "generation_ms": 0.0}
+    missing = readable_terms(query, grounding.missing_terms)
     if grounding.insufficient:
-        return Answer(REFUSAL, True, [], hits, classify(query), rewritten, grounding.coverage, "refusal", timings | {"total_ms": _ms(started)})
+        return Answer(REFUSAL, True, [], hits, classify(query), rewritten, grounding.coverage, "refusal",
+                      timings | {"total_ms": _ms(started)}, missing)
     text, generator = extractive_answer(retriever, query, grounding.evidence), "extractive"
     provider = provider_from_env() if use_llm else None
     if provider:
@@ -56,12 +59,14 @@ def answer_question(query: str, filters: dict | None = None, retriever: Retrieve
         try:
             result = provider.generate(query, grounding.evidence)
             if result["insufficient"]:
-                return Answer(REFUSAL, True, [], hits, classify(query), rewritten, grounding.coverage, provider.name, timings | {"total_ms": _ms(started)})
+                return Answer(REFUSAL, True, [], hits, classify(query), rewritten, grounding.coverage, provider.name,
+                              timings | {"total_ms": _ms(started)}, missing)
             text, generator = result["answer"], provider.name
         except LLMError:
             generator = "extractive (LLM fallback)"
         timings["generation_ms"] = _ms(generated)
-    return Answer(text, False, grounding.evidence, hits, classify(query), rewritten, grounding.coverage, generator, timings | {"total_ms": _ms(started)})
+    return Answer(text, False, grounding.evidence, hits, classify(query), rewritten, grounding.coverage, generator,
+                  timings | {"total_ms": _ms(started)}, missing)
 
 
 def _ms(since: float) -> float:

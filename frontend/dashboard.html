@@ -1,1 +1,55 @@
-<!doctype html><html><head><meta charset="utf-8"><title>TradeDocs AI Evaluation</title><style>body{margin:0;background:#09111f;color:#e7edf5;font:14px system-ui}.wrap{max-width:1100px;margin:auto;padding:40px}.back,.good{color:#61d8c1}.muted{color:#97aac4}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:26px 0}.card,.panel{background:#101c2f;border:1px solid #233752;border-radius:10px;padding:18px}.value{font-size:25px;margin-top:8px}.panel{margin-top:16px}.row{display:grid;grid-template-columns:1fr 100px 100px;padding:10px;border-bottom:1px solid #20304a}@media(max-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}</style></head><body><main class="wrap"><a class="back" href="/">Back to assistant</a><p class="good">INTERNAL QUALITY DASHBOARD</p><h1>System health and evaluation</h1><p class="muted">Persistent local telemetry and measured results on the held-out test split.</p><section class="grid" id="cards"></section><section class="panel"><h3>Retrieval ablation study</h3><div class="row muted"><span>Method</span><span>Recall@5</span><span>MRR</span></div><div id="ablation"></div></section><section class="panel"><h3>Generation safeguards</h3><p class="muted">Answers must cite supplied evidence; questions whose topic terms are not covered by the evidence are refused. <span id="answers"></span></p></section></main><script>const fmt=v=>v==null?'--':v<=1?(v*100).toFixed(0)+'%':v.toFixed(1)+' ms';Promise.all([fetch('/metrics').then(r=>r.json()),fetch('/evaluation/results').then(r=>r.json())]).then(([m,e])=>{cards.innerHTML=[['Total queries',m.total_queries],['Helpful rate',m.helpful_rate],['p50 latency',m.p50_latency_ms],['Insufficient evidence',m.unanswerable_rate]].map(x=>`<article class="card"><div class="muted">${x[0]}</div><div class="value">${fmt(x[1])}</div></article>`).join('');const t=e.splits.test;answers.textContent=`Test split: ${fmt(t.answers.refusal_recall_on_unanswerable)} of unanswerable questions refused, ${fmt(t.answers.answer_rate_on_answerable)} of answerable questions answered, citation precision ${fmt(t.answers.citation_precision)}.`;ablation.innerHTML=Object.entries(t.retrieval).map(([k,v])=>`<div class="row"><span>${k.replace('_',' + ')}</span><span class="good">${fmt(v.recall_at_5)}</span><span>${v.mrr}</span></div>`).join('')}).catch(()=>document.querySelector('.wrap').insertAdjacentHTML('beforeend','<p class="muted">Start the API to load dashboard data.</p>'))</script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TradeDocs evaluation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Literata:opsz,wght@7..72,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead">
+  <a class="wordmark" href="/">TradeDocs</a>
+  <nav aria-label="Main">
+    <a href="/">Assistant</a>
+    <a href="/dashboard.html" aria-current="page">Evaluation</a>
+  </nav>
+</header>
+
+<main class="report">
+  <header class="report-head">
+    <h1>How well it works</h1>
+    <p id="intro">Loading the latest evaluation…</p>
+  </header>
+
+  <section aria-labelledby="results-title">
+    <h2 id="results-title">Held-out test questions</h2>
+    <dl class="bars" id="results"></dl>
+  </section>
+
+  <section aria-labelledby="ablation-title">
+    <h2 id="ablation-title">Which retriever finds the right document</h2>
+    <p class="section-note">Each mode ranks the corpus for the same test questions. MRR rewards putting the right document first.</p>
+    <div class="table-wrap"><table id="ablation">
+      <thead><tr><th scope="col">Retriever</th><th scope="col">Right document first</th><th scope="col">In the top 5</th><th scope="col">MRR</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </section>
+
+  <section aria-labelledby="fails-title">
+    <h2 id="fails-title">Where it falls short</h2>
+    <p class="section-note">Every test question the system got wrong, as recorded by the last evaluation run.</p>
+    <ol class="fails" id="fails"></ol>
+  </section>
+
+  <section aria-labelledby="usage-title">
+    <h2 id="usage-title">Usage on this server</h2>
+    <p class="section-note">Live numbers from questions asked here, stored in local SQLite.</p>
+    <dl class="usage" id="usage"></dl>
+  </section>
+</main>
+<script src="dashboard.js"></script>
+</body>
+</html>

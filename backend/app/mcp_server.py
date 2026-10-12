@@ -9,8 +9,11 @@ All tools are read-only: they never modify documents, telemetry or feedback.
 from mcp.server.mcpserver import MCPServer
 
 from .corpus import load_corpus, versions_of
+from .env import load_dotenv
 from . import pipeline
 from .retrieval import MODES, default_retriever
+
+load_dotenv()
 
 server = MCPServer(
     name="tradedocs",

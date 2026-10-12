@@ -21,6 +21,21 @@ question → intent + query rewrite → BM25 + LSA dense retrieval → reciproca
 | Generation | Default: a deterministic **extractive** generator that only quotes evidence sentences, each with its citation. Optional: an **OpenAI-compatible** or **Anthropic Claude** model (`LLM_PROVIDER`, `LLM_API_KEY`). LLM output must be JSON, every `[n]` citation must point at supplied evidence, and any invalid output falls back to the extractive answer. |
 | Telemetry | Each request (intent, rewritten query, timings, retrieved and cited IDs, refusal) and user feedback are stored in SQLite and summarised at `/metrics` and `/dashboard.html`. |
 
+## Web interface
+
+![Answer with the cited sentence highlighted in its source document](docs/assistant.png)
+
+- **Every citation is checkable.** Selecting a citation opens the source document beside the answer with the quoted
+  sentence highlighted. Extractive answers match sentences exactly; LLM answers are matched to the closest source
+  sentence by token overlap (`highlight_sentences` in `grounding.py`).
+- **Refusals explain themselves.** A refused question shows its evidence coverage against the threshold and the words
+  the documentation never mentions (for "Can I stake crypto?": *stake, crypto*), plus the closest documents when there are any.
+- **Document library.** Browse and filter all 49 policies by category; superseded versions stay one click away.
+- **Version comparison.** For policies with several versions, "Compare" shows the old and new text side by side with
+  the changed figures marked (`GET /documents/{id}/compare/{other_id}`).
+- **Evaluation page** (`/dashboard.html`): the held-out results, the retrieval ablation, every test question the system
+  got wrong with its answer, and live usage from this server.
+
 ## Evaluation
 
 `python scripts/evaluate.py` runs 85 labelled questions (65 answerable, 20 deliberately unanswerable) split into a **dev** half, used for every tuning decision, and a held-out **test** half, used only for reporting. Results are written to `data/evaluation/results.json`; the numbers below are copied from it and measured with the extractive generator (no LLM).
@@ -64,11 +79,11 @@ python scripts/evaluate.py --tune                    # refusal threshold sweep o
 docker compose up --build
 ```
 
-Optional LLM generation: copy `.env.example` to `.env` and set `LLM_PROVIDER` (`openai` or `anthropic`) and `LLM_API_KEY`.
+Optional LLM generation: copy `.env.example` to `.env` and set `LLM_PROVIDER` (`openai` or `anthropic`) and `LLM_API_KEY`. The API and MCP server read `.env` at startup; variables already set in your shell take precedence.
 
 ### API
 
-`GET /health`, `POST /chat`, `POST /search` (modes `dense`, `bm25`, `hybrid`, `hybrid_rerank`), `GET /documents`, `GET /documents/{id}` (includes its other versions), `POST /feedback`, `GET /metrics`, `GET /evaluation/results`.
+`GET /health`, `POST /chat` (answer, evidence with highlighted sentence indices, coverage, threshold and missing terms), `POST /search` (modes `dense`, `bm25`, `hybrid`, `hybrid_rerank`), `GET /documents`, `GET /documents/{id}` (includes its other versions), `GET /documents/{id}/compare/{other_id}` (sentence-level diff between two versions of one policy), `POST /feedback`, `GET /metrics`, `GET /evaluation/results`.
 
 ### MCP server
 
